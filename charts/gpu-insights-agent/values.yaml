@@ -14,7 +14,7 @@ service:
   port: 80
 
 prometheus:
-  url: "http://gpu-usage-monitor-prometheus-server.gpu-usage-monitor.svc:9090"
+  url: "http://gpu-usage-monitor-prometheus-server.gpu-usage-monitor.svc"
   queryTimeoutSeconds: 10
 
 agent:

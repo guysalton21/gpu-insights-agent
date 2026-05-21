@@ -82,7 +82,7 @@ helm install gpu-insights-agent charts/gpu-insights-agent \
   --namespace gpu-usage-monitor \
   --set image.repository=ghcr.io/guysalton21/gpu-insights-agent \
   --set image.tag=0.1.0 \
-  --set prometheus.url=http://gpu-usage-monitor-prometheus-server.gpu-usage-monitor.svc:9090
+  --set prometheus.url=http://gpu-usage-monitor-prometheus-server.gpu-usage-monitor.svc
 ```
 
 Enable alert application only after reviewing RBAC:
