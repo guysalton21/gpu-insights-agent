@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "gpu-insights-agent.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "gpu-insights-agent.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "gpu-insights-agent.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "gpu-insights-agent.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    spec:
+      serviceAccountName: {{ include "gpu-insights-agent.serviceAccountName" . }}
+      containers:
+        - name: agent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: PROMETHEUS_URL
+              value: {{ .Values.prometheus.url | quote }}
+            - name: PROMETHEUS_QUERY_TIMEOUT_SECONDS
+              value: {{ .Values.prometheus.queryTimeoutSeconds | quote }}
+            - name: DEFAULT_QUERY_WINDOW
+              value: {{ .Values.agent.defaultWindow | quote }}
+            - name: MAX_QUERY_WINDOW_HOURS
+              value: {{ .Values.agent.maxQueryWindowHours | quote }}
+            - name: ALERT_NAMESPACE
+              value: {{ .Values.alerting.namespace | quote }}
+            - name: ALERT_GROUP_NAME
+              value: {{ .Values.alerting.groupName | quote }}
+            - name: ALLOW_ALERT_APPLY
+              value: {{ .Values.alerting.apply.enabled | quote }}
+            - name: LLM_ENABLED
+              value: {{ .Values.llm.enabled | quote }}
+            - name: OPENAI_BASE_URL
+              value: {{ .Values.llm.openaiBaseUrl | quote }}
+            - name: OPENAI_MODEL
+              value: {{ .Values.llm.openaiModel | quote }}
+{{- if .Values.llm.existingSecretName }}
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.llm.existingSecretName | quote }}
+                  key: {{ .Values.llm.apiKeySecretKey | quote }}
+{{- end }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+

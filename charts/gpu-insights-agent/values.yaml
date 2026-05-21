@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  repository: gpu-insights-agent
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  name: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+prometheus:
+  url: "http://gpu-usage-monitor-prometheus-server.gpu-usage-monitor.svc:9090"
+  queryTimeoutSeconds: 10
+
+agent:
+  defaultWindow: "6h"
+  maxQueryWindowHours: 168
+
+llm:
+  enabled: false
+  openaiBaseUrl: "https://api.openai.com/v1"
+  openaiModel: "gpt-4.1-mini"
+  existingSecretName: ""
+  apiKeySecretKey: "OPENAI_API_KEY"
+
+alerting:
+  namespace: "monitoring"
+  groupName: "gpu-insights-agent.rules"
+  apply:
+    enabled: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+

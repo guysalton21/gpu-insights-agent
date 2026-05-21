@@ -1,0 +1,7 @@
+apiVersion: v2
+name: gpu-insights-agent
+description: Natural-language GPU usage insights and guarded Prometheus alert generation.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
