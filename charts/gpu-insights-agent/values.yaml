@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: gpu-insights-agent
+  repository: ghcr.io/guysalton21/gpu-insights-agent
   tag: "0.1.0"
   pullPolicy: IfNotPresent
 
@@ -46,4 +46,3 @@ podAnnotations: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
-

@@ -69,11 +69,10 @@ python -m gpu_insights_agent "Which GPU pods are idle?"
 
 ## Kubernetes Install
 
-Build and push an image:
+The published image is available from GitHub Container Registry:
 
 ```bash
-docker build -t registry.example.com/gpu-insights-agent:0.1.0 .
-docker push registry.example.com/gpu-insights-agent:0.1.0
+docker pull ghcr.io/guysalton21/gpu-insights-agent:0.1.0
 ```
 
 Install:
@@ -81,7 +80,7 @@ Install:
 ```bash
 helm install gpu-insights-agent charts/gpu-insights-agent \
   --namespace gpu-usage-monitor \
-  --set image.repository=registry.example.com/gpu-insights-agent \
+  --set image.repository=ghcr.io/guysalton21/gpu-insights-agent \
   --set image.tag=0.1.0 \
   --set prometheus.url=http://gpu-usage-monitor-prometheus-server.gpu-usage-monitor.svc:9090
 ```
@@ -113,4 +112,3 @@ Only compact summarized observations are sent to the LLM layer, not raw time ser
 - Use network policy so the service can only reach Prometheus, Kubernetes API, and an approved LLM endpoint if used.
 - Scope the service account to the namespaces and resources customers want managed.
 - Log every question, generated query ID, alert proposal, and alert application event.
-
